@@ -34,6 +34,7 @@ def shortenURL():
     if not utils.is_valid_url(long_url):
         return jsonify({"status": "error", "message": "Invalid URL format"}), 400
 
+# db_lock to ensure thread safety, only a single change will be made at a time
     with db_lock:
         for short_code, url_map_data in url_database.items():
             if url_map_data['long_url'] == long_url:
@@ -45,7 +46,7 @@ def shortenURL():
                     "status": "ok",
                     "short_code": short_code,
                     "short_url": short_url,
-                    "message": "URL already shortened and click count incremented"
+                    "message": "URL already shortened"
                 }), 200
 
         # If long URL does not exist, create a new entry
